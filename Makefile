@@ -25,7 +25,7 @@ all : obj distancevector linkstate
 #$@: name of rule's target: server, client, talker, or listener, for the respective rules.
 #$^: the entire dependency string (after expansions); here, $(SERVEROBJECTS)
 #CC is a built in variable for the default C compiler; it usually defaults to "gcc". (CXX is g++).
-linkstate: $(SERVEROBJECTS)
+linkstate: $(LSROBJECTS)
 	$(CC) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
 
 
@@ -39,8 +39,9 @@ linkstate: $(SERVEROBJECTS)
 #
 #In this case, CLIENTOBJECTS is just obj/client.o. So, if obj/client.o doesn't exist or is out of date, 
 #make will first look for a rule to build it. That rule is the 'obj/%.o' one, below; the % is a wildcard.
-distancevector: $(CLIENTOBJECTS)
+distancevector: $(DVROBJECTS)
 	$(CC) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
+#$(CC) src/distancevector.c -o obj/dvr
 
 #RM is a built-in variable that defaults to "rm -f".
 clean :
@@ -51,7 +52,9 @@ clean :
 #The % sign means "match one or more characters". You specify it in the target, and when a file
 #dependency is checked, if its name matches this pattern, this rule is used. You can also use the % 
 #in your list of dependencies, and it will insert whatever characters were matched for the target name.
-obj/%.o: src/%.c
+obj/dvr.o: src/distancevector.c
+	$(CC) $(COMPILERFLAGS) -c -o $@ $<
+obj/lsr.o: src/linkstate.c
 	$(CC) $(COMPILERFLAGS) -c -o $@ $<
 obj:
 	mkdir -p obj
