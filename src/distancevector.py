@@ -7,7 +7,15 @@ class Node:
     def dvr_update_neighbours(self,change):
         self.sendnameplaceholder = []
 
-def apply_topology_to_nodes(data)
+def apply_topology_to_nodes(data):
+    nodes = {}
+    for node_id, neighbor_ids in enumerate(data):
+        node = Node()
+        nodes[node_id] = node
+        for neighbor_id, cost in enumerate(neighbor_ids):
+            if cost != 0:
+                node.neighbours.append((neighbor_id, cost))
+    return nodes
 
 def distancevector(topology, message, changes):
     topology_data = get_data(topology)
