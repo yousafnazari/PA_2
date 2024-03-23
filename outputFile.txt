@@ -1,0 +1,1 @@
+from: 3 to: 5 cost: 7 hops: 2 1 message: this message gets sent from 3 to 5
