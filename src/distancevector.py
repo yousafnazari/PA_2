@@ -186,5 +186,4 @@ if __name__ == '__main__':
     else: 
         distancevector(top,msg,chg,network)
     #print(f"{top},{msg},{chg},{out}")
-    
-    #distancevector('topologyFile.txt','messageFile.txt','changesFile.txt',network)
+
