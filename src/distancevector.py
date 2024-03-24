@@ -113,11 +113,27 @@ def distancevector(topology, message, changes, network, output='outputFile.txt')
 
     #read topology and apply it to the network
     topology_data = get_data(topology)
+    print(topology_data)
     apply_topology_to_nodes(topology_data, network)
     #read messages to send
     messages = read_message(message)
+    print(messages)
     '''
     ADD FORWARDING TABLE CONGERENCE ALGO HERE
+    '''
+    converged = False
+    '''
+    while not converged:
+        # exchange information with neighbours
+        for node in nodes:
+            node.send_distance_vector()
+
+        # update distance vectors
+        for node in nodes:
+            node.distance_vector_algorithm()
+
+        # check for convergence
+        converged = all(nodes.distance_vector_converged() for node in nodes)
     '''
     #output forwarding tables and sent messages
     output_data(output, messages, network)
