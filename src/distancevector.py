@@ -20,16 +20,31 @@ class Network:
             updated = False
 
             #do for each node
-            for node_id, node in self.nodes.items():
-                #do for each neighbour of node
-                for neighbour_id, cost in node.neighbours.items():
-                    neighbour = self.nodes[neighbour_id]
-                    #add route for each of neighbours' neighbours
-                    for destination, (next_hop, path_cost) in neighbour.forwarding_table.items():
-                        #check for lower cost path
-                        if destination not in node.forwarding_table or cost + path_cost < node.forwarding_table[destination][1]:
-                            node.update_forwarding_table(destination,neighbour_id,cost+path_cost)
-                            updated = True
+            for _, node in self.nodes.items():
+                #do for each destination in node's forwarding table
+                for destination, (next_hop, path_cost) in node.forwarding_table.items():
+                    lowest_cost = path_cost
+                    lowest_next_hop = next_hop
+
+                    #do for each neighbour of node
+                    for neighbour_id, cost in node.neighbours.items():
+                        neighbour = self.nodes[neighbour_id]
+
+                        #check if neighbour has route to destination
+                        if destination in neighbour.forwarding_table:
+                            #calculate total cost to destination
+                            total_cost = cost + neighbour.forwarding_table[destination][1]
+
+                            #check for lower cost from new route
+                            if total_cost < lowest_cost:
+                                lowest_cost = total_cost
+                                lowest_next_hop = neighbour_id
+
+
+                    #update forwarding table with lowest cost route
+                    if lowest_next_hop != next_hop:
+                        node.update_forwarding_table(destination, lowest_next_hop, lowest_cost)
+                        updated = True
 
     
 class Node:
@@ -128,27 +143,12 @@ def distancevector(topology, message, changes, network, output='outputFile.txt')
 
     #read topology and apply it to the network
     topology_data = get_data(topology)
-    print(topology_data)
     apply_topology_to_nodes(topology_data, network)
     #read messages to send
     messages = read_message(message)
     network.converge()
     '''
     ADD FORWARDING TABLE CONGERENCE ALGO HERE
-    '''
-    converged = False
-    '''
-    while not converged:
-        # exchange information with neighbours
-        for node in nodes:
-            node.send_distance_vector()
-
-        # update distance vectors
-        for node in nodes:
-            node.distance_vector_algorithm()
-
-        # check for convergence
-        converged = all(nodes.distance_vector_converged() for node in nodes)
     '''
     #output forwarding tables and sent messages
     output_data(output, messages, network)
@@ -169,4 +169,4 @@ if __name__ == '__main__':
         distancevector(top,msg,chg,network,out)
     else: 
         distancevector(top,msg,chg,network)
-    print(f"{top},{msg},{chg},{out}")
+    #print(f"{top},{msg},{chg},{out}")
