@@ -14,7 +14,22 @@ class Network:
 
     def converge(self):
         #do converge algorithm
-        pass
+        updated = True 
+
+        while updated:
+            updated = False
+
+            #do for each node
+            for node_id, node in self.nodes.items():
+                #do for each neighbour of node
+                for neighbour_id, cost in node.neighbours.items():
+                    neighbour = self.nodes[neighbour_id]
+                    #add route for each of neighbours' neighbours
+                    for destination, (next_hop, path_cost) in neighbour.forwarding_table.items():
+                        #check for lower cost path
+                        if destination not in node.forwarding_table or cost + path_cost < node.forwarding_table[destination][1]:
+                            node.update_forwarding_table(destination,neighbour_id,cost+path_cost)
+                            updated = True
 
     
 class Node:
@@ -117,7 +132,7 @@ def distancevector(topology, message, changes, network, output='outputFile.txt')
     apply_topology_to_nodes(topology_data, network)
     #read messages to send
     messages = read_message(message)
-    print(messages)
+    network.converge()
     '''
     ADD FORWARDING TABLE CONGERENCE ALGO HERE
     '''
