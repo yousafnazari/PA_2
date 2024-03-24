@@ -143,7 +143,15 @@ def distancevector(topology, message, changes, network, output='outputFile.txt')
 
 
 
-
+import sys
 if __name__ == '__main__':
     network = Network()
-    distancevector('topologyFile.txt','messageFile.txt','changesFile.txt',network)
+    top = sys.argv[1]
+    msg = sys.argv[2]
+    chg = sys.argv[3]
+    if len(sys.argv) > 4:
+        out = sys.argv[4]
+        distancevector(top,msg,chg,network,out)
+    else: 
+        distancevector(top,msg,chg,network)
+    print(f"{top},{msg},{chg},{out}")
